@@ -273,6 +273,15 @@ class TypicalLogitsWarper(LogitsWarper):
         scores = scores.masked_fill(indices_to_remove, self.filter_value)
         return scores
 
+class TypicalRedistributionLogitsWarper(LogitsWarper):
+    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
+
+        logprobs = torch.nn.functional.log_softmax(scores, dim=-1)
+        probs = torch.exp(logprobs)
+        infos = -logprobs
+        entropy = (probs * infos).nansum(-1, keepdim=True)
+        distances = torch.abs(infos - entropy)
+        return torch.nn.functional.log_softmax(-distances, dim=-1)
 
 def _get_ngrams(ngram_size: int, prev_input_ids: torch.Tensor, num_hypos: int):
     generated_ngrams = [{} for _ in range(num_hypos)]
