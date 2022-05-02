@@ -660,7 +660,7 @@ class GenerationMixin:
         # the following idea is largely copied from this PR: https://github.com/huggingface/transformers/pull/5420/files
         # all samplers can be found in `generation_utils_samplers.py`
         if typically_redistribute is True:
-            warpers.append(TypicalRedistributionLogitsWarper)
+            warpers.append(TypicalRedistributionLogitsWarper())
         if temperature is not None and temperature != 1.0:
             warpers.append(TemperatureLogitsWarper(temperature))
         if top_k is not None and top_k != 0:
