@@ -378,7 +378,7 @@ class Message:
         print(json.dumps({"blocks": json.loads(payload)}))
 
         client.chat_postMessage(
-            channel=os.environ["CI_SLACK_CHANNEL_ID_DAILY"],
+            channel=os.environ["CI_SLACK_CHANNEL_DUMMY_TESTS"],
             text="There was an issue running the tests.",
             blocks=payload,
         )
@@ -390,7 +390,7 @@ class Message:
         text = f"{self.n_failures} failures out of {self.n_tests} tests," if self.n_failures else "All tests passed."
 
         self.thread_ts = client.chat_postMessage(
-            channel=os.environ["CI_SLACK_CHANNEL_ID_DAILY"],
+            channel=os.environ["CI_SLACK_CHANNEL_DUMMY_TESTS"],
             blocks=self.payload,
             text=text,
         )
@@ -436,7 +436,7 @@ class Message:
                     print(json.dumps({"blocks": blocks}))
 
                     client.chat_postMessage(
-                        channel=os.environ["CI_SLACK_CHANNEL_ID_DAILY"],
+                        channel=os.environ["CI_SLACK_CHANNEL_DUMMY_TESTS"],
                         text=f"Results for {job}",
                         blocks=blocks,
                         thread_ts=self.thread_ts["ts"],
@@ -459,7 +459,7 @@ class Message:
                     print(json.dumps({"blocks": blocks}))
 
                     client.chat_postMessage(
-                        channel=os.environ["CI_SLACK_CHANNEL_ID_DAILY"],
+                        channel=os.environ["CI_SLACK_CHANNEL_DUMMY_TESTS"],
                         text=f"Results for {job}",
                         blocks=blocks,
                         thread_ts=self.thread_ts["ts"],
