@@ -43,6 +43,7 @@ from .generation_logits_process import (
     TopKLogitsWarper,
     TopPLogitsWarper,
     TypicalLogitsWarper,
+    TypicalRedistributionLogitsWarper,
 )
 from .generation_stopping_criteria import (
     MaxLengthCriteria,
@@ -638,6 +639,7 @@ class GenerationMixin:
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         typical_p: Optional[float] = None,
+        typically_redistribute: Optional[bool] = None,
         temperature: Optional[float] = None,
         num_beams: Optional[int] = None,
         renormalize_logits: Optional[bool] = None,
@@ -657,6 +659,8 @@ class GenerationMixin:
 
         # the following idea is largely copied from this PR: https://github.com/huggingface/transformers/pull/5420/files
         # all samplers can be found in `generation_utils_samplers.py`
+        if typically_redistribute is True:
+            warpers.append(TypicalRedistributionLogitsWarper)
         if temperature is not None and temperature != 1.0:
             warpers.append(TemperatureLogitsWarper(temperature))
         if top_k is not None and top_k != 0:
@@ -852,6 +856,7 @@ class GenerationMixin:
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         typical_p: Optional[float] = None,
+        typically_redistribute: Optional[bool] = None,
         repetition_penalty: Optional[float] = None,
         bad_words_ids: Optional[Iterable[int]] = None,
         force_words_ids: Optional[Union[Iterable[int], Iterable[Iterable[int]]]] = None,
@@ -1293,6 +1298,7 @@ class GenerationMixin:
                 top_k=top_k,
                 top_p=top_p,
                 typical_p=typical_p,
+                typically_redistribute = typically_redistribute,
                 temperature=temperature,
                 num_beams=num_beams,
                 renormalize_logits=renormalize_logits,
@@ -1360,6 +1366,7 @@ class GenerationMixin:
                 top_k=top_k,
                 top_p=top_p,
                 typical_p=typical_p,
+                typically_redistribute=typically_redistribute,
                 temperature=temperature,
                 num_beams=num_beams,
                 renormalize_logits=renormalize_logits,
